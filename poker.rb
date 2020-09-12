@@ -39,6 +39,22 @@ class Card
     "#{@suit}の#{@number}"
   end
 
+  #NUMBERSの得点
+  def score
+    if @number == "A"
+      score = 14
+    elsif @number == "K"
+      score = 13
+    elsif @number == "Q"
+      score = 12
+    elsif @number == "J"
+      score = 11
+    else
+      score = @number.to_i
+    end
+  end
+
+
 end
 
 class Hand
@@ -48,6 +64,7 @@ class Hand
   #手札の配列を生成
   def initialize
     @hands = []
+    @discards = []
   end
 
   #ゲーム開始時に手札を配る
@@ -57,6 +74,21 @@ class Hand
       @hands << hand
     }
   end
+
+  #カードを数字の昇順に並び替え
+  def rearrange
+    @hands.sort_by {|x| x[1]}
+    display_player_hands
+
+  
+  end
+
+  # #役判定
+  # def judge_hands
+  #   if 
+
+  #   end
+  # end
 
 end
 
@@ -70,14 +102,14 @@ class Player < Hand
     EOS
 
     @hands.each.with_index(1) do |hand, i|
-      puts " #{i}枚目 ： #{hand.show}"
+      puts "#{i}枚目 ： #{hand.show}"
     end
 
     puts "------------------------------------"
   end
 
-  def select_exchange_cards
-    # def select_cards
+  #捨てる手札の選択
+  def select_discard
     #交換メッセージ
     puts <<~EOS
 
@@ -87,27 +119,53 @@ class Player < Hand
     EOS
     
     #捨てるカードの選択
-    selected_id = gets.split(' ').map(&:to_i)
+    @selected_ids = gets.split(' ').map(&:to_i)
     
-    #選んだカードの説明
-    selected_id.each{|id| 
-    selected_hand = @hands[id - 1]
-    puts selected_hand.show
+    #選んだ手札を表示
+    puts 
+    @selected_ids.each{|id| 
+      selected_hand = @hands[id - 1]
+      puts selected_hand.show
+      @discards << selected_hand
     }
   end
-
+  
+  #選択した手札を捨てる
+  def discard
+    @hands.delete_if{|hand|
+      @discards.include?(hand)
+    }
+    puts <<~EOS
+      を削除しました
+    EOS
+  end
+    
   #捨てた枚数分山札から引く
   def draw_for_exchange(deck)
-    size = selected_id.size
-    size.times {|hand|
+    @selected_ids.size.times {|hand|
       hand = deck.draw
       @hands << hand
-    } 
-  
-    @hands.each.with_index(1) do |hand, i|
-      puts " #{i}枚目 ： #{hand.show}"
+    }   
+  end
+
+    #手札を交換するか決める
+  def decide_exchange(deck)
+    puts <<~EOS
+
+      1.手札を交換する  2.手札を交換しない
+    EOS
+
+    action = gets.chomp.to_i
+    if action == 1
+      select_discard
+      discard
+      draw_for_exchange(deck)
+      # 役判定メソッド
+    elsif action == 2
+      # 役判定メソッド
+      # puts "OK"
     end
-  
+
   end
 
 end
@@ -131,10 +189,11 @@ class GamesController
     
     player.start_distribute(deck)
     player.display_player_hands
-    player.select_exchange_cards
-    player.draw_for_exchange
-
-
+    
+    player.decide_exchange(deck)
+    player.display_player_hands
+    
+    player.rearrange
   end
 
   
