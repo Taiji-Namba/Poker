@@ -1,5 +1,5 @@
 class Deck
-  attr_accessor :cards
+  attr_accessor :card
 
   #スートと数字を定義
   SUITS = ["スペード", "ハート", "ダイヤ", "クローバー"]
@@ -78,9 +78,12 @@ class Hand
   #カードを数字の昇順に並び替え
   def rearrange
     @hands.each {|hand|
-      @score = hand.score
+      score = hand.score
+      # @hands << score
+      puts score
     }
-  puts score
+
+    # puts @hands.sort {|x| x[2]}
     # display_player_hands
 
   
