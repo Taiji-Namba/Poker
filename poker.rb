@@ -43,15 +43,15 @@ class Card
   #NUMBERSの得点
   def score
     if @number == "A"
-      14
+      @score = 14
     elsif @number == "K"
-      13
+      @score = 13
     elsif @number == "Q"
-      12
+      @score = 12
     elsif @number == "J"
-      11
+      @score = 11
     else
-      @number.to_i
+      @score = @number.to_i
     end
   end
 
@@ -77,7 +77,7 @@ class Hand
 
   #カードを数字の昇順に並び替え
   def rearrange
-    score = @hands.score
+    puts @hands.score
     # display_player_hands
 
   
