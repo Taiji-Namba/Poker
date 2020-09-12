@@ -77,7 +77,7 @@ class Hand
 
   #カードを数字の昇順に並び替え
   def rearrange
-    @hands.sort_by {|x| x[1]}
+    # @hands.sort_by {|x| x[1]}
     display_player_hands
 
   
