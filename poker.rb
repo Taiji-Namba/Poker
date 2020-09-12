@@ -33,27 +33,27 @@ class Card
   def initialize(suit, number)
     @suit = suit
     @number = number
+    # @score = score
   end
-
+  
   def show
     "#{@suit}の#{@number}"
   end
-
+  
   #NUMBERSの得点
   def score
     if @number == "A"
-      score = 14
+      14
     elsif @number == "K"
-      score = 13
+      13
     elsif @number == "Q"
-      score = 12
+      12
     elsif @number == "J"
-      score = 11
+      11
     else
-      score = @number.to_i
+      @number.to_i
     end
   end
-
 
 end
 
@@ -77,8 +77,8 @@ class Hand
 
   #カードを数字の昇順に並び替え
   def rearrange
-    # @hands.sort_by {|x| x[1]}
-    display_player_hands
+    score = @hands.score
+    # display_player_hands
 
   
   end
@@ -136,7 +136,7 @@ class Player < Hand
       @discards.include?(hand)
     }
     puts <<~EOS
-      を削除しました
+      を交換しました
     EOS
   end
     
