@@ -1,6 +1,4 @@
 class Deck
-  # attr_accessor :card
-
   #スートと数字を定義
   SUITS = ["スペード", "ハート", "ダイヤ", "クローバー"]
   NUMBERS = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"]
@@ -29,7 +27,7 @@ class Deck
 end
 
 class Card
-  attr_reader :suit, :score
+  attr_reader :score
 
   #カードを初期化
   def initialize(suit, number)
@@ -37,7 +35,8 @@ class Card
     @number = number
     @score = 0 #とりあえずの初期値
   end
-  
+
+  #カードの表示
   def show
     "#{@suit}の#{@number}"
   end
@@ -77,42 +76,64 @@ class Hand
     }
   end
 
-  #カードをscoreの昇順に並び替え
-  def rearrange
-    @hands.each {|hand| hand.set_score} #@scoreに値をセット
-
-    @sort_hands = @hands.sort {|a, b| a.score <=> b.score} #並び替え
-    # p @sort_hands
-    # sort_hands.each {|h| puts h.score} #表示
-  end
-
   #役判定メソッド
   def judge_ranks
-    #隣り合う@sort_handsの差を配列で取得
-    differences = [
+    
+    rearrange
+    take_difference
+    count_number_of_suits_types
+    count_number_of_scores_types
+
+    #役判定
+    if @differences.count(1) == 4 && @number_of_suits_types == 1 && @sort_hands[0].score == 10
+      @rank = "ローヤルストレートフラッシュ"
+    elsif @differences.count(1) == 4 && @number_of_suits_types == 1
+      @rank = "ストレートフラッシュ"
+    elsif @number_of_each_score.include?(4) 
+      @rank = "フォーカード"
+    elsif @number_of_each_score.include?(3) && @number_of_each_score.include?(2)
+      @rank = "フルハウス"
+    elsif @number_of_suits_types == 1
+      @rank = "フラッシュ"
+    elsif @differences.count(1) == 4
+      @rank = "ストレート"
+    elsif @number_of_each_score.include?(3)
+      @rank = "スリーカード"
+    elsif @number_of_each_score.count(2) == 2
+      @rank = "ツーペア"
+    elsif @number_of_each_score.count(2) == 1
+      @rank = "ワンペア"
+    else
+      @rank = "ハイカード"
+    end
+
+    puts <<~EOS
+
+    あなたの役は
+    #{@rank}
+    EOS
+
+  end
+
+  #カードをscoreの昇順に並び替え
+  def rearrange
+    #@scoreに値をセット
+    @hands.each {|hand| hand.set_score}
+    
+    #並び替え
+    @sort_hands = @hands.sort {|a, b| a.score <=> b.score}
+  end
+  
+  #隣り合う@sort_handsのscoreの差を配列で取得
+  def take_difference
+    @differences = [
       @sort_hands[1].score - @sort_hands[0].score,
       @sort_hands[2].score - @sort_hands[1].score,
       @sort_hands[3].score - @sort_hands[2].score,
       @sort_hands[4].score - @sort_hands[3].score
     ]
-
-    count_number_of_suits_types
-    count_number_of_scores_types
-
-    #役判定
-    # if differences.count(1) == 4 && (@sort_hands[0].suit == @sort_hands[1].suit == @sort_hands[2].suit == @sort_hands[3].suit == @sort_hands[4].suit) && @sort_hands[0].score == 10
-    #   @rank = "royal straight flush"
-    # elsif differences.count(1) == 4 && @sort_hands[0].suit == @sort_hands[1].suit == @sort_hands[2].suit == @sort_hands[3].suit == @sort_hands[4].suit
-    #   @rank = "straight flush"
-    # elsif number_of_the_same_score.include?(4)
-    #   @rank = "four of a kind"
-    # elsif number_of_the_same_score.include?(3) == number_of_the_same_score.include?(2)
-    #   @rank = "full house"
-    # else puts "それ以外"
-    # end
-
   end
-  
+
   #同じsuitのカードが何枚あるか
   def count_number_of_suits_types
     #@sort_hands中の@suitの値を配列で取得
@@ -124,7 +145,10 @@ class Hand
     }
     
     #suitsの中の同じ要素の数をhashで返し、hashの要素数を取得
-    number_of_suits = suits.group_by(&:itself).transform_values(&:size).size
+    @number_of_suits_types = suits.group_by(&:itself).transform_values(&:size).size
+
+    #同じsuitが何枚ずつあるか
+    @number_of_each_suit = suits.group_by(&:itself).transform_values(&:size).values
   end
 
   #同じscoreのカードが何枚あるか
@@ -138,7 +162,10 @@ class Hand
     }
     
     #scoresの中の同じ要素の数をhashで返し、hashの要素数を取得
-    p number_of_scores = scores.group_by(&:itself).transform_values(&:size).size
+    @number_of_scores_types = scores.group_by(&:itself).transform_values(&:size).size
+
+    #同じscoreが何枚ずつあるか
+    @number_of_each_score = scores.group_by(&:itself).transform_values(&:size).values
   end
 
 end
@@ -165,7 +192,7 @@ class Player < Hand
     puts <<~EOS
 
     何枚目のカードを交換するか数字で入力して下さい
-    複数枚を選択する際は数字同士の間に半角スペースをあけて下さい
+    複数枚を選択する際は間に半角スペースをあけて下さい
     例)1 2 3
     EOS
     
@@ -182,7 +209,7 @@ class Player < Hand
   end
   
   #選択した手札を捨てる
-  def discard
+  def player_discard
     @hands.delete_if{|hand|
       @discards.include?(hand)
     }
@@ -206,15 +233,14 @@ class Player < Hand
       1.手札を交換する  2.手札を交換しない
     EOS
 
+    #交換の是非
     action = gets.chomp.to_i
     if action == 1
       select_discard
-      discard
+      player_discard
       draw_for_exchange(deck)
-      # 役判定メソッド
     elsif action == 2
-      # 役判定メソッド
-      # puts "OK"
+      return
     end
 
   end
@@ -222,7 +248,9 @@ class Player < Hand
 end
 
 class Dealer < Hand
+  def dealer_discard
 
+  end
 end
 
 
@@ -239,13 +267,18 @@ class GamesController
     dealer = Dealer.new
     
     player.start_distribute(deck)
+    dealer.start_distribute(deck)
+
+
     player.display_player_hands
     
     player.decide_exchange(deck)
     player.display_player_hands
     
-    player.rearrange
+    # player.rearrange
     player.judge_ranks
+
+
   end
 
   
