@@ -1,5 +1,5 @@
 class Deck
-  attr_accessor :card
+  # attr_accessor :card
 
   #スートと数字を定義
   SUITS = ["スペード", "ハート", "ダイヤ", "クローバー"]
@@ -29,29 +29,31 @@ class Deck
 end
 
 class Card
+  attr_reader :score
+
   #カードを初期化
   def initialize(suit, number)
     @suit = suit
     @number = number
-    # @score = score
+    @score = 0 #とりあえずの初期値
   end
   
   def show
     "#{@suit}の#{@number}"
   end
   
-  #NUMBERSの得点
-  def score
+  #NUMBERSのスコア
+  def set_score
     if @number == "A"
-      14
+      @score = 14
     elsif @number == "K"
-      13
+      @score = 13
     elsif @number == "Q"
-      12
+      @score = 12
     elsif @number == "J"
-      11
+      @score = 11
     else
-      @number.to_i
+      @score = @number.to_i
     end
   end
 
@@ -75,26 +77,26 @@ class Hand
     }
   end
 
-  #カードを数字の昇順に並び替え
+  #カードをscoreの昇順に並び替え
   def rearrange
-    @hands.each {|hand|
-      score = hand.score
-      # @hands << score
-      puts score
-    }
+    @hands.each {|hand| hand.set_score} #@scoreに値をセット
 
-    # puts @hands.sort {|x| x[2]}
-    # display_player_hands
-
-  
+    @sort_hands = @hands.sort {|a, b| a.score <=> b.score} #並び替え
+    # p sort_hands
+    # sort_hands.each {|h| puts h.score} #表示
   end
 
-  # #役判定
-  # def judge_hands
-  #   if 
+  #役判定
+  def judge_hands
+    differences = [
+      @sort_hands[1] - @sort_hands[0],
+      @sort_hands[2] - @sort_hands[1],
+      @sort_hands[3] - @sort_hands[2],
+      @sort_hands[4] - @sort_hands[3],
+    ]
+    puts differences
 
-  #   end
-  # end
+  end
 
 end
 
@@ -200,6 +202,7 @@ class GamesController
     player.display_player_hands
     
     player.rearrange
+    player.judge_hands
   end
 
   
