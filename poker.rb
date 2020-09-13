@@ -29,7 +29,7 @@ class Deck
 end
 
 class Card
-  attr_reader :score
+  attr_reader :suit, :score
 
   #カードを初期化
   def initialize(suit, number)
@@ -82,20 +82,63 @@ class Hand
     @hands.each {|hand| hand.set_score} #@scoreに値をセット
 
     @sort_hands = @hands.sort {|a, b| a.score <=> b.score} #並び替え
-    # p sort_hands
+    # p @sort_hands
     # sort_hands.each {|h| puts h.score} #表示
   end
 
-  #役判定
-  def judge_hands
+  #役判定メソッド
+  def judge_ranks
+    #隣り合う@sort_handsの差を配列で取得
     differences = [
-      @sort_hands[1] - @sort_hands[0],
-      @sort_hands[2] - @sort_hands[1],
-      @sort_hands[3] - @sort_hands[2],
-      @sort_hands[4] - @sort_hands[3],
+      @sort_hands[1].score - @sort_hands[0].score,
+      @sort_hands[2].score - @sort_hands[1].score,
+      @sort_hands[3].score - @sort_hands[2].score,
+      @sort_hands[4].score - @sort_hands[3].score
     ]
-    puts differences
 
+    count_number_of_suits_types
+    count_number_of_scores_types
+
+    #役判定
+    # if differences.count(1) == 4 && (@sort_hands[0].suit == @sort_hands[1].suit == @sort_hands[2].suit == @sort_hands[3].suit == @sort_hands[4].suit) && @sort_hands[0].score == 10
+    #   @rank = "royal straight flush"
+    # elsif differences.count(1) == 4 && @sort_hands[0].suit == @sort_hands[1].suit == @sort_hands[2].suit == @sort_hands[3].suit == @sort_hands[4].suit
+    #   @rank = "straight flush"
+    # elsif number_of_the_same_score.include?(4)
+    #   @rank = "four of a kind"
+    # elsif number_of_the_same_score.include?(3) == number_of_the_same_score.include?(2)
+    #   @rank = "full house"
+    # else puts "それ以外"
+    # end
+
+  end
+  
+  #同じsuitのカードが何枚あるか
+  def count_number_of_suits_types
+    #@sort_hands中の@suitの値を配列で取得
+    suits = []
+
+    @sort_hands.each {|hand|
+    suit = hand.instance_variable_get(:@suit)
+    suits << suit 
+    }
+    
+    #suitsの中の同じ要素の数をhashで返し、hashの要素数を取得
+    number_of_suits = suits.group_by(&:itself).transform_values(&:size).size
+  end
+
+  #同じscoreのカードが何枚あるか
+  def count_number_of_scores_types
+    #@sort_hands中の@scoreの値を配列で取得
+    scores = []
+
+    @sort_hands.each {|hand|
+    score = hand.instance_variable_get(:@score)
+    scores << score 
+    }
+    
+    #scoresの中の同じ要素の数をhashで返し、hashの要素数を取得
+    p number_of_scores = scores.group_by(&:itself).transform_values(&:size).size
   end
 
 end
@@ -202,7 +245,7 @@ class GamesController
     player.display_player_hands
     
     player.rearrange
-    player.judge_hands
+    player.judge_ranks
   end
 
   
