@@ -137,35 +137,38 @@ class Hand
   #同じsuitのカードが何枚あるか
   def count_number_of_suits_types
     #@sort_hands中の@suitの値を配列で取得
-    suits = []
+    @suits = []
 
     @sort_hands.each {|hand|
     suit = hand.instance_variable_get(:@suit)
-    suits << suit 
+    @suits << suit 
     }
     
     #suitsの中の同じ要素の数をhashで返し、hashの要素数を取得
-    @number_of_suits_types = suits.group_by(&:itself).transform_values(&:size).size
+    @number_of_suits_types = @suits.group_by(&:itself).transform_values(&:size).size
 
     #同じsuitが何枚ずつあるか
-    @number_of_each_suit = suits.group_by(&:itself).transform_values(&:size).values
+    @number_of_each_suit = @suits.group_by(&:itself).transform_values(&:size).values
   end
 
   #同じscoreのカードが何枚あるか
   def count_number_of_scores_types
     #@sort_hands中の@scoreの値を配列で取得
-    scores = []
+    @scores = []
 
     @sort_hands.each {|hand|
     score = hand.instance_variable_get(:@score)
-    scores << score 
+    @scores << score 
     }
     
+    #scoreの種類と数をhashで取得
+    @hash_of_scores_types = @scores.group_by(&:itself).transform_values(&:size)
+
     #scoresの中の同じ要素の数をhashで返し、hashの要素数を取得
-    @number_of_scores_types = scores.group_by(&:itself).transform_values(&:size).size
+    @number_of_scores_types = @hash_of_scores_types.size
 
     #同じscoreが何枚ずつあるか
-    @number_of_each_score = scores.group_by(&:itself).transform_values(&:size).values
+    @number_of_each_score = @hash_of_scores_types.values
   end
 
 end
@@ -248,8 +251,39 @@ class Player < Hand
 end
 
 class Dealer < Hand
-  def dealer_discard
+  def dealer_exchange
+    rearrange
+    take_difference
+    count_number_of_suits_types
+    count_number_of_scores_types
 
+    if @differences.count(1) == 4
+      return #ストレート系を確定
+    elsif @differences.count(0) == 4
+      return #フォーカード OR フルハウスを確定
+    elsif @number_of_suits_types == 1
+      return #フラッシュを確定
+    elsif @number_of_each_suit == 4 && @differences.count(1) == 4
+      probability = rand(3)
+      if probability == 0 #1/3の確率で
+        action_for_flush #フラッシュ狙いで交換
+      else # 2/3の確率で
+        return #ストレートを確定
+      end
+    else
+      puts "それ以外"
+    end
+
+    def action_for_flush
+      #1枚だけ違うsuitのカードを捨てる
+      if suit = @suits.find{|suit| suit == @hash_of_scores_types.key(1)}
+        @sort_hands.delete(suit)
+        
+        #一枚山札から引く
+        hand = deck.draw
+        @hands << hand
+      end
+    end
   end
 end
 
@@ -277,6 +311,8 @@ class GamesController
     
     # player.rearrange
     player.judge_ranks
+
+    dealer.dealer_exchange
 
 
   end
