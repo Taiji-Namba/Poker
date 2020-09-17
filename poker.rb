@@ -97,24 +97,34 @@ class Hand
     #役判定
     if royal_straight_flush
       @rank = "ローヤルストレートフラッシュ"
+      @point = 1000000000
     elsif straight_flush
       @rank = "ストレートフラッシュ"
+      @point = 100000000
     elsif four_of_a_kind
       @rank = "フォーカード"
+      @point = 10000000
     elsif a_full_house
       @rank = "フルハウス"
-    elsif a_full_house
+      @point = 1000000
+    elsif flush
       @rank = "フラッシュ"
+      @point = 100000
     elsif straight
       @rank = "ストレート"
+      @point = 10000
     elsif three_of_a_kind
       @rank = "スリーカード"
+      @point = 1000
     elsif two_pair
       @rank = "ツーペア"
+      @point = 100
     elsif a_pair
       @rank = "ワンペア"
+      @point = 10
     else
       @rank = "ハイカード"
+      @point = 1
     end
 
     puts <<~EOS
@@ -195,6 +205,11 @@ class Hand
       @discards.include?(hand)
     }
   end
+
+  # def confront 
+  #   if 
+
+  # end
 
 end
 
@@ -281,16 +296,15 @@ end
 
 class Dealer < Hand
 
-  def dealer_exchange(deck)
+  def dealer_exchange(i, deck)
     rearrange
     take_difference
     count_number_of_suits_types
     count_number_of_scores_types
-    dealer_decide_card
-
+    dealer_decide_card(i, deck)
   end
 
-  def dealer_decide_card
+  def dealer_decide_card(i, deck)
 
     #フラッシュドロー(4枚のスートが同じ)の定義
     flush_draw = @number_of_each_suit.include?(4)
@@ -317,20 +331,20 @@ class Dealer < Hand
     elsif flush_draw && @rank == "ストレート"
       #1/3の確率でストレートを確定, 2/3の確率でフラッシュ(あるいはストレートフラッシュ狙い)で交換
       probability = rand(3)
-      probability == 0 ? return : action_for_flush
+      probability == 0 ? return : action_for_flush(1, deck)
     
     #スートが同じ札が4枚
     elsif flush_draw
-      action_for_flush #フラッシュ狙いでスートが違う1枚交換
+      action_for_flush(1, deck) #フラッシュ狙いでスートが違う1枚交換
     
     # @differences.count(1) == 3 かつ 1枚だけ2以上離れている
     elsif straight_draw 
-      action_for_straight
+      action_for_straight(1, deck)
       
     #スリーカード完成済み
     elsif @rank == "スリーカード"
       #スリーカードになっていない1枚交換
-      action_when_three_of_a_kind
+      action_when_three_of_a_kind(1, deck)
 
     #ツーペア形成済み, ペアになっていない札を交換
     elsif @rank == "ツーペア"
@@ -338,129 +352,129 @@ class Dealer < Hand
 
     #ワンペア形成済み, ペア以外を交換
     elsif @rank == "ワンペア"
-      action_when_a_pair
+      action_when_a_pair(3, deck)
 
     else 
-      action_when_high_card
+      action_when_high_card(i, deck)
     end
   end
 
   #ストレート狙いのアクション
-  def action_for_straight
+  def action_for_straight(i,deck)
     #1枚目のscoreが連続していない
     if @scores[1] - @scores[0] >= 2
       #1枚目を交換
       @discards << @sort_hands[0]
       
-      dealer_draw(1)
+      dealer_draw(1, deck)
       
     #5枚目のscoreが連続していない
     elsif @scores[4] - @scores[3] >= 2
       #5枚目を交換
       @discards << @sort_hands[4]
 
-      dealer_draw(1)
+      dealer_draw(1, deck)
     
     #2,3枚目もしくは3,4枚目が同じ
     elsif @scores[1] == @scores[2] || @scores[2] == @scores[3]
       #同じscoreの札を交換
       @discards << @sort_hands[2]
 
-      dealer_draw(1)
+      dealer_draw(1, deck)
 
     end
   end
 
   #フラッシュ狙いの行動
-  def action_for_flush
+  def action_for_flush(i, deck)
     #1枚だけ違うsuitのカードを交換
     if suit = @suits.find{|suit| suit == @hash_of_suits_types.key(1)}
       @sort_hands.delete(suit)
       
-      dealer_draw(1)
+      dealer_draw(1, deck)
 
     end
   end
 
   #スリーペアのときの行動
-  def action_when_three_of_a_kind
+  def action_when_three_of_a_kind(i, deck)
     #1,2,3枚目のscoreが同じ
     if @scores[0] == @scores[1] && @scores[1] && @scores[2]
       #フルハウス狙いで4枚目を交換
       @discards << @sort_hands[3]
 
-      dealer_draw(1)
+      dealer_draw(1, deck)
 
     #2,3,4枚目のscoreが同じ
     elsif @scores[1] == @scores[2] && @scores[2] && @scores[3]
       #フルハウス狙いで1枚目を交換
       @discards << @sort_hands[0]
 
-      dealer_draw(1)
+      dealer_draw(1, deck)
 
     #3,4,5枚目のscoreが同じ
     elsif @scores[2] == @scores[3] && @scores[3] && @scores[4]
       #フルハウス狙いで1枚目を交換
       @discards << @sort_hands[0]
 
-      dealer_draw(1)
+      dealer_draw(1, deck)
 
     end
   end
 
   #ツーペアのときの行動
-  def action_when_two_pair
+  def action_when_two_pair(i, deck)
     if @scores[0] == @scores[1] && @scores[2] && @scores[3]
       #フルハウス狙いで5枚目を交換
       @discards << @sort_hands[4]
 
-      dealer_draw(1)
+      dealer_draw(1, deck)
 
     elsif @scores[0] == @scores[1] && @scores[3] && @scores[4]
       #フルハウス狙いで3枚目を交換
       @discards << @sort_hands[2]
 
-      dealer_draw(1)
+      dealer_draw(1, deck)
     
     elsif @scores[1] == @scores[2] && @scores[3] && @scores[4]
       #フルハウス狙いで1枚目を交換
       @discards << @sort_hands[0]
 
-      dealer_draw(1)
+      dealer_draw(1, deck)
     
     end
   end
 
-  def action_when_a_pair
+  def action_when_a_pair(i, deck)
     if @scores[0] == @scores[1]
       #フルハウス狙いで3,4,5枚目を交換
       @discards.push(@sort_hands[2], @sort_hands[3], @sort_hands[4])
 
-      dealer_draw(3)
+      dealer_draw(3, deck)
 
     elsif @scores[1] == @scores[2]
       #フルハウス狙いで1,4,5枚目を交換
       @discards.push(@sort_hands[0], @sort_hands[3], @sort_hands[4])
 
-      dealer_draw(3)
+      dealer_draw(3, deck)
 
     elsif @scores[2] == @scores[3]
       #フルハウス狙いで1,2,5枚目を交換
       @discards.push(@sort_hands[0], @sort_hands[1], @sort_hands[4])
 
-      dealer_draw(1)
+      dealer_draw(3, deck)
 
     elsif @scores[3] == @scores[4]
       #フルハウス狙いで1,2,3枚目を交換
       @discards.push(@sort_hands[0], @sort_hands[1], @sort_hands[2])
 
-      dealer_draw(1)
+      dealer_draw(3, deck)
 
     end
   end
 
   #ハイカードのときの行動
-  def action_when_high_card
+  def action_when_high_card(n, deck)
     #ランダムに3-5枚交換
     n = rand(3..5)
     discards = @sort_hands.sample(n)
@@ -468,11 +482,11 @@ class Dealer < Hand
     @discards << discard
     }
 
-    dealer_draw(n)
+    dealer_draw(n, deck)
 
   end
 
-  def dealer_draw(i)
+  def dealer_draw(i, deck)
     discard
 
     i.times {|hand|
@@ -527,7 +541,7 @@ class GamesController
     
     player.judge_ranks
 
-    dealer.dealer_exchange(deck)
+    dealer.dealer_exchange(i, deck)
     dealer.exchange_message
     dealer.display_dealer_hand
 
