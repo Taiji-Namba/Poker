@@ -482,6 +482,14 @@ class Dealer < Hand
 
   end
 
+  def exchange_message
+    number = @discards.size
+    puts <<~EOS
+    デイーラーのターンです
+    ディーラーは#{number}枚交換しました
+    EOS
+  end
+
   #dealerの手札公開
   def display_dealer_hand
     puts <<~EOS
@@ -512,18 +520,16 @@ class GamesController
     player.start_distribute(deck)
     dealer.start_distribute(deck)
 
-
     player.display_player_hands
     
     player.decide_exchange(deck)
     player.display_player_hands
     
-    # player.rearrange
     player.judge_ranks
 
     dealer.dealer_exchange(deck)
+    dealer.exchange_message
     dealer.display_dealer_hand
-
 
   end
 
