@@ -350,21 +350,21 @@ class Dealer < Hand
     #1枚目のscoreが連続していない
     if @scores[1] - @scores[0] >= 2
       #1枚目を交換
-      @discards << @sorts_hands[0]
+      @discards << @sort_hands[0]
       
       dealer_draw(1)
       
     #5枚目のscoreが連続していない
     elsif @scores[4] - @scores[3] >= 2
       #5枚目を交換
-      @discards << @sorts_hands[4]
+      @discards << @sort_hands[4]
 
       dealer_draw(1)
     
     #2,3枚目もしくは3,4枚目が同じ
     elsif @scores[1] == @scores[2] || @scores[2] == @scores[3]
       #同じscoreの札を交換
-      @discards << @sorts_hands[2]
+      @discards << @sort_hands[2]
 
       dealer_draw(1)
 
@@ -377,8 +377,8 @@ class Dealer < Hand
     if suit = @suits.find{|suit| suit == @hash_of_suits_types.key(1)}
       @sort_hands.delete(suit)
       
-      hand = deck.draw
-      @hands << hand
+      dealer_draw(1)
+
     end
   end
 
@@ -387,21 +387,21 @@ class Dealer < Hand
     #1,2,3枚目のscoreが同じ
     if @scores[0] == @scores[1] && @scores[1] && @scores[2]
       #フルハウス狙いで4枚目を交換
-      @discards << @sorts_hands[3]
+      @discards << @sort_hands[3]
 
       dealer_draw(1)
 
     #2,3,4枚目のscoreが同じ
     elsif @scores[1] == @scores[2] && @scores[2] && @scores[3]
       #フルハウス狙いで1枚目を交換
-      @discards << @sorts_hands[0]
+      @discards << @sort_hands[0]
 
       dealer_draw(1)
 
     #3,4,5枚目のscoreが同じ
     elsif @scores[2] == @scores[3] && @scores[3] && @scores[4]
       #フルハウス狙いで1枚目を交換
-      @discards << @sorts_hands[0]
+      @discards << @sort_hands[0]
 
       dealer_draw(1)
 
@@ -412,19 +412,19 @@ class Dealer < Hand
   def action_when_two_pair
     if @scores[0] == @scores[1] && @scores[2] && @scores[3]
       #フルハウス狙いで5枚目を交換
-      @discards << @sorts_hands[4]
+      @discards << @sort_hands[4]
 
       dealer_draw(1)
 
     elsif @scores[0] == @scores[1] && @scores[3] && @scores[4]
       #フルハウス狙いで3枚目を交換
-      @discards << @sorts_hands[2]
+      @discards << @sort_hands[2]
 
       dealer_draw(1)
     
     elsif @scores[1] == @scores[2] && @scores[3] && @scores[4]
       #フルハウス狙いで1枚目を交換
-      @discards << @sorts_hands[0]
+      @discards << @sort_hands[0]
 
       dealer_draw(1)
     
@@ -434,25 +434,25 @@ class Dealer < Hand
   def action_when_a_pair
     if @scores[0] == @scores[1]
       #フルハウス狙いで3,4,5枚目を交換
-      @discards.push(@sorts_hands[2], @sorts_hands[3], @sorts_hands[4])
+      @discards.push(@sort_hands[2], @sort_hands[3], @sort_hands[4])
 
       dealer_draw(3)
 
     elsif @scores[1] == @scores[2]
       #フルハウス狙いで1,4,5枚目を交換
-      @discards.push(@sorts_hands[0], @sorts_hands[3], @sorts_hands[4])
+      @discards.push(@sort_hands[0], @sort_hands[3], @sort_hands[4])
 
       dealer_draw(3)
 
     elsif @scores[2] == @scores[3]
       #フルハウス狙いで1,2,5枚目を交換
-      @discards.push(@sorts_hands[0], @sorts_hands[1], @sorts_hands[4])
+      @discards.push(@sort_hands[0], @sort_hands[1], @sort_hands[4])
 
       dealer_draw(1)
 
     elsif @scores[3] == @scores[4]
       #フルハウス狙いで1,2,3枚目を交換
-      @discards.push(@sorts_hands[0], @sorts_hands[1], @sorts_hands[2])
+      @discards.push(@sort_hands[0], @sort_hands[1], @sort_hands[2])
 
       dealer_draw(1)
 
@@ -461,7 +461,15 @@ class Dealer < Hand
 
   #ハイカードのときの行動
   def action_when_high_card
-    #ランダムな枚数交換
+    #ランダムに3-5枚交換
+    n = rand(3..5)
+    discards = @sort_hands.sample(n)
+    discards.each {|discard|
+    @discards << discard
+    }
+
+    dealer_draw(n)
+
   end
 
   def dealer_draw(i)
