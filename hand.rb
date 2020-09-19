@@ -1,4 +1,5 @@
 class Hand
+  attr_reader :point
   #ゲーム開始時にドローする回数
   NUMBER_OF_DRAW_TIMES_AT_START = 5
   
@@ -6,6 +7,7 @@ class Hand
   def initialize
     @hands = []
     @discards = []
+    @point = point
   end
 
   #ゲーム開始時に手札を配る
@@ -37,24 +39,34 @@ class Hand
     #役判定
     if royal_straight_flush
       @rank = "ローヤルストレートフラッシュ"
+      @point = 1000000000
     elsif straight_flush
       @rank = "ストレートフラッシュ"
+      @point = 100000000
     elsif four_of_a_kind
       @rank = "フォーカード"
+      @point = 10000000
     elsif a_full_house
       @rank = "フルハウス"
+      @point = 1000000
     elsif a_full_house
       @rank = "フラッシュ"
+      @point = 100000
     elsif straight
       @rank = "ストレート"
+      @point = 10000
     elsif three_of_a_kind
       @rank = "スリーカード"
+      @point = 1000
     elsif two_pair
       @rank = "ツーペア"
+      @point = 100
     elsif a_pair
       @rank = "ワンペア"
+      @point = 10
     else
       @rank = "ハイカード"
+      @point = 1
     end
 
     puts <<~EOS
@@ -135,6 +147,18 @@ class Hand
     @hands.delete_if{|hand|
       @discards.include?(hand)
     }
+  end
+
+  def confront
+    
+    if player.point > dealer.point
+      puts "あなたの勝ちです"
+    elsif player.point < dealer.point
+      puts "ディーラーの勝ちです"
+    elsif player.point == dealer.point
+      puts "ドローです"
+    end
+    
   end
 
 end

@@ -40,7 +40,11 @@ class GamesController
 
     #ディーラーの役表示
     character = "ディーラー"
-    player.judge_rank(character)
+    dealer.judge_rank(character)
+
+    #役の対決
+    
+    hand.confront
 
   end
 

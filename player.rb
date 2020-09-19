@@ -1,4 +1,5 @@
 class Player < Hand
+  attr_reader :point
 
   #プレイヤーの手札を表示
   def display_player_hands
@@ -25,8 +26,16 @@ class Player < Hand
       select_discard
       player_discard
       player_draw_for_exchange(deck)
+      puts 
+      puts "最終的な手札はこちらです"
     elsif action == 2
-      return
+      puts
+      puts "最終的な手札はこちらです"
+    else
+      puts 
+      puts "半角の1か2を選択して下さい"
+
+      decide_exchange(deck)
     end
 
   end
@@ -55,15 +64,16 @@ class Player < Hand
   
   #選択した手札を捨てる
   def player_discard
-    discard
 
-    #選択した手札を表示
     @selected_ids.each{|id| 
       selected_hand = @hands[id - 1]
       puts selected_hand.show
       @discards << selected_hand
     }
 
+    discard
+    
+    #選択した手札を表示
     puts <<~EOS
       を交換しました
     EOS
@@ -75,6 +85,10 @@ class Player < Hand
       hand = deck.draw
       @hands << hand
     }   
+  end
+
+  def player_point
+    @player_point = @point
   end
 
 end

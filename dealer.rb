@@ -1,6 +1,8 @@
 class Dealer < Hand
+  attr_reader :point
 
   def dealer_exchange(deck)
+
     rearrange
     take_difference
     count_number_of_suits_types
@@ -206,6 +208,10 @@ class Dealer < Hand
     number = @discards.size
     puts "ディーラーのターンです"
     puts number >0 ? "ディーラーは#{number}枚交換しました" : "ディーラーは交換しませんでした"
+  end
+
+  def dealer_rank
+    @dealer_rank = @rank
   end
 
   #dealerの手札公開
