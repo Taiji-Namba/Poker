@@ -13,7 +13,7 @@ class Player < Hand
   end
 
       #手札を交換するか決める
-  def decide_exchange(deck)
+  def player_exchange(deck)
     puts <<~EOS
 
       1.手札を交換する  2.手札を交換しない
@@ -35,7 +35,7 @@ class Player < Hand
       puts 
       puts "半角の1か2を選択して下さい"
 
-      decide_exchange(deck)
+      player_exchange(deck)
     end
 
   end
