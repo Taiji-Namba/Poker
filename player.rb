@@ -1,5 +1,5 @@
 class Player < Hand
-  attr_reader :point
+  attr_accessor :point
 
   #プレイヤーの手札を表示
   def display_player_hands
@@ -85,10 +85,6 @@ class Player < Hand
       hand = deck.draw
       @hands << hand
     }   
-  end
-
-  def player_point
-    @player_point = @point
   end
 
 end

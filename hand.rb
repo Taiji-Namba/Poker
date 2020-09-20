@@ -1,5 +1,5 @@
 class Hand
-  attr_reader :point
+  attr_accessor :point
   #ゲーム開始時にドローする回数
   NUMBER_OF_DRAW_TIMES_AT_START = 5
   
@@ -69,12 +69,7 @@ class Hand
       @point = 1
     end
 
-    puts <<~EOS
-
-    #{character}の役は
-    #{@rank}になりました
-
-    EOS
+    rank_message(character)
 
   end
 
@@ -149,16 +144,35 @@ class Hand
     }
   end
 
-  def confront
-    
-    if player.point > dealer.point
-      puts "あなたの勝ちです"
-    elsif player.point < dealer.point
-      puts "ディーラーの勝ちです"
-    elsif player.point == dealer.point
-      puts "ドローです"
+  def set_point
+    if @rank == "ローヤルストレートフラッシュ"
+      @point = 1000000000
+    elsif @rank == "ストレートフラッシュ"
+      @point = 100000000
+    elsif @rank == "フォーカード"
+      @point = 10000000
+    elsif @rank == "フルハウス"
+      @point = 1000000
+    elsif @rank == "フラッシュ"
+      @point = 100000
+    elsif @rank == "ストレート"
+      @point = 10000
+    elsif @rank == "スリーカード"
+      @point = 1000
+    elsif @rank == "ワンペア"
+      @point = 10
+    elsif @rank == "ハイカード"
+      @point = 1
     end
-    
+  end
+
+  def rank_message(character)
+    puts <<~EOS
+
+    #{character}の役は
+    #{@rank}になりました
+
+    EOS
   end
 
 end

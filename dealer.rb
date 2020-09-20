@@ -1,5 +1,5 @@
 class Dealer < Hand
-  attr_reader :point
+  attr_accessor :point
 
   def dealer_exchange(deck)
 
@@ -15,6 +15,7 @@ class Dealer < Hand
 
     #フラッシュドロー(4枚のスートが同じ)の定義
     flush_draw = @number_of_each_suit.include?(4)
+
     #ストレートドロー(1枚だけscoreが連続していない)の定義
     straight_draw = @differences.count(1) == 3
 
@@ -24,7 +25,7 @@ class Dealer < Hand
 
     #フォーカードかフルハウスが完成済み
     elsif @rank == "フォーカード"
-      return #フォーカード か フルハウスを確定
+      return #フォーカードを確定
 
     #フルハウスが完成済み
     elsif @rank == "フルハウス"
@@ -58,7 +59,7 @@ class Dealer < Hand
 
     #ワンペア形成済み, ペア以外を交換
     elsif @rank == "ワンペア"
-      action_when_a_pair
+      action_when_a_pair(deck)
     else 
       action_when_high_card(deck)
     end
@@ -208,10 +209,6 @@ class Dealer < Hand
     number = @discards.size
     puts "ディーラーのターンです"
     puts number >0 ? "ディーラーは#{number}枚交換しました" : "ディーラーは交換しませんでした"
-  end
-
-  def dealer_rank
-    @dealer_rank = @rank
   end
 
   #dealerの手札公開

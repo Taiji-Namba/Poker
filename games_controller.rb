@@ -12,7 +12,6 @@ class GamesController
     EOS
     
     deck = Deck.new
-    hand = Hand.new
     player = Player.new
     dealer = Dealer.new
     
@@ -33,19 +32,32 @@ class GamesController
     character = "あなた"
     player.judge_rank(character)
     
+    
     #ディーラーが手札を交換,交換メッセージ表示,手札表示
+    
+    character = "ディーラー"
+    dealer.judge_rank(character)
+    # player.rank_message(character)
+    
     dealer.dealer_exchange(deck)
     dealer.exchange_message
     dealer.display_dealer_hand
 
     #ディーラーの役表示
-    character = "ディーラー"
     dealer.judge_rank(character)
 
     #役の対決
-    
-    hand.confront
+    player.set_point 
+    dealer.set_point
+    if player.point > dealer.point
+      puts "あなたの勝ちです"
+    elsif player.point < dealer.point
+      puts "ディーラーの勝ちです"
+    else player.point == dealer.point
+      puts "ドローです"
+    end
 
+    
   end
 
 end
