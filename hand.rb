@@ -105,9 +105,10 @@ class Hand
     @scores = []
 
     @sort_hands.each {|hand|
-    score = hand.instance_variable_get(:@scores)
+    score = hand.instance_variable_get(:@score)
     @scores << score 
     }
+
     
     #scoreの種類と数をhashで取得
     @hash_of_scores_types = @scores.group_by(&:itself).transform_values(&:size)
