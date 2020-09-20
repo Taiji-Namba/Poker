@@ -1,5 +1,5 @@
 class Hand
-  attr_reader :point, :sub_point
+  
   #ゲーム開始時にドローする回数
   NUMBER_OF_DRAW_TIMES_AT_START = 5
   

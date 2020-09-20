@@ -1,5 +1,4 @@
 class Player < Hand
-attr_reader :point, :sub_point
 
   #プレイヤーの手札を表示
   def display_player_hands
