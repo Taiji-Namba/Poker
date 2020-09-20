@@ -178,7 +178,7 @@ attr_reader :point, :sub_point
       #フルハウス狙いで1,2,3枚目を交換
       @discards.push(@sort_hands[0], @sort_hands[1], @sort_hands[2])
 
-      number_of_units_to_be_replaced{times.dealer_draw(deck)}
+      number_of_units_to_be_replaced.times{dealer_draw(deck)}
 
     end
   end
