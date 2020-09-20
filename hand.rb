@@ -7,7 +7,6 @@ class Hand
   def initialize
     @hands = []
     @discards = []
-    @point = point
   end
 
   #ゲーム開始時に手札を配る
@@ -39,34 +38,24 @@ class Hand
     #役判定
     if royal_straight_flush
       @rank = "ローヤルストレートフラッシュ"
-      @point = 1000000000
     elsif straight_flush
       @rank = "ストレートフラッシュ"
-      @point = 100000000
     elsif four_of_a_kind
       @rank = "フォーカード"
-      @point = 10000000
     elsif a_full_house
       @rank = "フルハウス"
-      @point = 1000000
     elsif a_full_house
       @rank = "フラッシュ"
-      @point = 100000
     elsif straight
       @rank = "ストレート"
-      @point = 10000
     elsif three_of_a_kind
       @rank = "スリーカード"
-      @point = 1000
     elsif two_pair
       @rank = "ツーペア"
-      @point = 100
     elsif a_pair
       @rank = "ワンペア"
-      @point = 10
     else
       @rank = "ハイカード"
-      @point = 1
     end
 
   end
@@ -142,25 +131,48 @@ class Hand
     }
   end
 
+  #役の強さを決めるためのpointと、playerとdealerで@rankが被った時のためのsub_pointの設定
+  #同じ@rank同士のときはsub_pointが大きいほうが勝利
   def set_point
     if @rank == "ローヤルストレートフラッシュ"
       @point = 1000000000
     elsif @rank == "ストレートフラッシュ"
       @point = 100000000
+      @sub_point = @scores.max #一番scoreの大きいカードのscore
     elsif @rank == "フォーカード"
       @point = 10000000
+      @sub_point = @hash_of_scores_types.key(4) #フォーカードを作っているカードのscore
     elsif @rank == "フルハウス"
       @point = 1000000
+      @sub_point = @hash_of_scores_types.key(3) #3枚1組のカードのscore
     elsif @rank == "フラッシュ"
       @point = 100000
+      @sub_point1 = @scores.max #一番scoreの大きいカードのscore
     elsif @rank == "ストレート"
       @point = 10000
+      @sub_point = @scores.max #一番scoreの大きいカードのscore
     elsif @rank == "スリーカード"
       @point = 1000
+      @sub_point = @hash_of_scores_types.key(3) #3枚1組のカードのscore
+    elsif @rank == "ツーペア"
+      @point = 100
+      @sub_point1 = @hash_of_scores_types.select{|hash_of_scores_types, v| v==2}.values_at(1) #scoreの大きなペアのカードのscore
+      @sub_point1 = @hash_of_scores_types.select{|hash_of_scores_types, v| v==2}.values_at(0) #scoreの大きなペアのカードのscore
+      @sub_point3 = @hash_of_scores_types.key(1) #ペアになっていないカードのscore
     elsif @rank == "ワンペア"
       @point = 10
+      @sub_point1 = @hash_of_scores_types.key(2)
+      @sub_point2 = @hash_of_scores_types.select{|hash_of_scores_types, v| v==1}.values_at(2) #最もscoreの大きなサイドカードのscore
+      @sub_point2 = @hash_of_scores_types.select{|hash_of_scores_types, v| v==1}.values_at(1) #二番目にscoreの大きなサイドカードのscore
+      @sub_point2 = @hash_of_scores_types.select{|hash_of_scores_types, v| v==1}.values_at(0) #最も小さなscoreの大きなサイドカードのscore
     elsif @rank == "ハイカード"
       @point = 1
+      #ハイカードのsub_pointはscoreの大きさで決定
+      @sub_point1 = @sort_hands[4] 
+      @sub_point2 = @sort_hands[3]
+      @sub_point3 = @sort_hands[2]
+      @sub_point4 = @sort_hands[1]
+      @sub_point5 = @sort_hands[0]
     end
   end
 
