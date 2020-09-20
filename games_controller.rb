@@ -8,7 +8,11 @@ class GamesController
   
   def start
     puts <<~EOS
-    ----------Welcome to Poker---------- 
+    ------------------------------------
+    |                                  |
+    |         Welcome to Poker         |
+    |                                  |
+    ------------------------------------
     EOS
     
     deck = Deck.new
@@ -53,7 +57,6 @@ class GamesController
     elsif player.point < dealer.point
       puts "ディーラーの勝ちです"
     else
-      puts "ドロー"
       if player.sub_point1 > dealer.sub_point1
         puts "あなたの勝ちです"
       elsif player.sub_point1 < dealer.sub_point1

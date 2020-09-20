@@ -1,5 +1,5 @@
 class Hand
-  
+  attr_reader :point, :sub_point1, :sub_point2, :sub_point3, :sub_point4, :sub_point5
   #ゲーム開始時にドローする回数
   NUMBER_OF_DRAW_TIMES_AT_START = 5
   
@@ -119,12 +119,14 @@ class Hand
     @number_of_each_score = @hash_of_scores_types.values
   end
 
+  #手札を表示
   def display_hands
     @hands.each.with_index(1) do |hand, i|
       puts "#{i}枚目 ： #{hand.show}"
     end
   end
 
+  #手札を捨てる
   def discard
     @hands.delete_if{|hand|
       @discards.include?(hand)
@@ -141,10 +143,10 @@ class Hand
       @sub_point1 = @scores.max #一番scoreの大きいカードのscore
     elsif @rank == "フォーカード"
       @point = 10000000
-      @sub_point1 = @hash_of_scores_types.key(4) #フォーカードを作っているカードのscore
+      @sub_point1 = @hash_of_scores_types.key(4).to_s.to_i #フォーカードを作っているカードのscore
     elsif @rank == "フルハウス"
       @point = 1000000
-      @sub_point1 = @hash_of_scores_types.key(3) #3枚1組のカードのscore
+      @sub_point1 = @hash_of_scores_types.key(3).to_s.to_i #3枚1組のカードのscore
     elsif @rank == "フラッシュ"
       @point = 100000
       @sub_point1 = @scores.max #一番scoreの大きいカードのscore
@@ -153,29 +155,30 @@ class Hand
       @sub_point1 = @scores.max #一番scoreの大きいカードのscore
     elsif @rank == "スリーカード"
       @point = 1000
-      @sub_point1 = @hash_of_scores_types.key(3) #3枚1組のカードのscore
+      @sub_point1 = @hash_of_scores_types.key(3).to_s.to_i #3枚1組のカードのscore
     elsif @rank == "ツーペア"
       @point = 100
-      @sub_point1 = @hash_of_scores_types.select{|hash_of_scores_types, v| v==2}.values_at(1) #scoreの大きなペアのカードのscore
-      @sub_point2 = @hash_of_scores_types.select{|hash_of_scores_types, v| v==2}.values_at(0) #scoreの大きなペアのカードのscore
-      @sub_point3 = @hash_of_scores_types.key(1) #ペアになっていないカードのscore
+      @sub_point1 = @hash_of_scores_types.select{|hash_of_scores_types, v| v==2}.values_at(1).to_s.to_i #scoreの大きなペアのカードのscore
+      @sub_point2 = @hash_of_scores_types.select{|hash_of_scores_types, v| v==2}.values_at(0).to_s.to_i #scoreの大きなペアのカードのscore
+      @sub_point3 = @hash_of_scores_types.key(1).to_s.to_i #ペアになっていないカードのscore
     elsif @rank == "ワンペア"
       @point = 10
-      @sub_point1 = @hash_of_scores_types.key(2)
-      @sub_point2 = @hash_of_scores_types.select{|hash_of_scores_types, v| v==1}.values_at(2) #最もscoreの大きなサイドカードのscore
-      @sub_point3 = @hash_of_scores_types.select{|hash_of_scores_types, v| v==1}.values_at(1) #二番目にscoreの大きなサイドカードのscore
-      @sub_point4 = @hash_of_scores_types.select{|hash_of_scores_types, v| v==1}.values_at(0) #最も小さなscoreの大きなサイドカードのscore
+      @sub_point1 = @hash_of_scores_types.key(2).to_s.to_i
+      @sub_point2 = @hash_of_scores_types.select{|hash_of_scores_types, v| v==1}.values_at(2).to_s.to_i #最もscoreの大きなサイドカードのscore
+      @sub_point3 = @hash_of_scores_types.select{|hash_of_scores_types, v| v==1}.values_at(1).to_s.to_i #二番目にscoreの大きなサイドカードのscore
+      @sub_point4 = @hash_of_scores_types.select{|hash_of_scores_types, v| v==1}.values_at(0).to_s.to_i #最も小さなscoreの大きなサイドカードのscore
     elsif @rank == "ハイカード"
       @point = 1
-      #ハイカードのsub_pointはscoreの大きさで決定
-      @sub_point1 = @sort_hands[4] 
-      @sub_point2 = @sort_hands[3]
-      @sub_point3 = @sort_hands[2]
-      @sub_point4 = @sort_hands[1]
-      @sub_point5 = @sort_hands[0]
+      #ハイカードのsub_pointはscoreの大きなカードから順番に比較
+      @sub_point1 = @sort_hands[4].score
+      @sub_point2 = @sort_hands[3].score
+      @sub_point3 = @sort_hands[2].score
+      @sub_point4 = @sort_hands[1].score
+      @sub_point5 = @sort_hands[0].score
     end
   end
 
+  #役を表示
   def rank_message(character)
     puts <<~EOS
 

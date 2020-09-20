@@ -17,6 +17,7 @@ class Player < Hand
     puts <<~EOS
 
       1.手札を交換する  2.手札を交換しない
+      1か2を入力してください 
     EOS
 
     #交換の是非
