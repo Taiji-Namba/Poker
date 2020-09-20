@@ -1,5 +1,5 @@
 class Dealer < Hand
-  attr_accessor :point
+attr_reader :point, :sub_point
 
   def dealer_exchange(deck)
 
