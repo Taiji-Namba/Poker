@@ -27,10 +27,10 @@ class Player < Hand
       player_discard
       player_draw_for_exchange(deck)
       puts 
-      puts "最終的な手札はこちらです"
+      puts "あなたの手札はこうなりました"
     elsif action == 2
       puts
-      puts "最終的な手札はこちらです"
+      puts "あなたの手札はこうなりました"
     else
       puts 
       puts "半角の1か2を選択して下さい"
@@ -47,6 +47,21 @@ class Player < Hand
 
     #捨てるカードの選択
     @selected_ids = gets.split(' ').map(&:to_i)
+    if ! @selected_ids.select {|n| n < 1 || n > 5}.empty?
+      puts <<~EOS
+
+        半角数字の1-5のみ入力できます
+      EOS
+      @selected_ids = gets.split(' ').map(&:to_i)
+    elsif @selected_ids.uniq != @selected_ids
+      puts <<~EOS
+
+        同じ数字が2回以上入力されています
+        再度入力し直して下さい
+      EOS
+        @selected_ids = gets.split(' ').map(&:to_i)
+    end
+    
     
     puts 
 

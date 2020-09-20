@@ -10,7 +10,7 @@ class GamesController
     puts <<~EOS
     ------------------------------------
     |                                  |
-    |         Welcome to Poker         |
+    |           Start of Poker         |
     |                                  |
     ------------------------------------
     EOS
@@ -48,7 +48,7 @@ class GamesController
     character = "ディーラー"
     @dealer.rank_message(character)
 
-    #役の対決
+    #playerとdealerが対決
     confront
     
   end
@@ -58,32 +58,32 @@ class GamesController
     @dealer.set_point
 
     if @player.point > @dealer.point
-      puts "あなたの勝ちです"
+      puts "おめでとうございます！あなたの勝ちです"
     elsif @player.point < @dealer.point
       puts "ディーラーの勝ちです"
     else
       if @player.sub_point1 > @dealer.sub_point1
-        puts "あなたの勝ちです"
+        puts "おめでとうございます！あなたの勝ちです"
       elsif @player.sub_point1 < @dealer.sub_point1
         puts "ディーラーの勝ちです"
       else
         if @player.sub_point2 > @dealer.sub_point2
-          puts "あなたの勝ちです"
+          puts "おめでとうございます！あなたの勝ちです"
         elsif @player.sub_point2 < @dealer.sub_point2
           puts "ディーラーの勝ちです"
         else
           if @player.sub_point3 > @dealer.sub_point3
-            puts "あなたの勝ちです"
+            puts "おめでとうございます！あなたの勝ちです"
           elsif @player.sub_point3 < @dealer.sub_point3
             puts "ディーラーの勝ちです"
           else
             if @player.sub_point4 > @dealer.sub_point4
-              puts "あなたの勝ちです"
+              puts "おめでとうございます！あなたの勝ちです"
             elsif @player.sub_point4 < @dealer.sub_point4
               puts "ディーラーの勝ちです"
             else
               if @player.sub_point5 > @dealer.sub_point5
-                puts "あなたの勝ちです"
+                puts "おめでとうございます！あなたの勝ちです"
               elsif @player.sub_point5 < @dealer.sub_point5
                 puts "ディーラーの勝ちです"
               else
