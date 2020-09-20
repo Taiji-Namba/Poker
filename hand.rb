@@ -19,7 +19,7 @@ class Hand
   end
 
   #役判定メソッド
-  def judge_rank(character)
+  def judge_rank
     
     rearrange
     take_difference
@@ -68,8 +68,6 @@ class Hand
       @rank = "ハイカード"
       @point = 1
     end
-
-    rank_message(character)
 
   end
 

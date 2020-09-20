@@ -30,21 +30,19 @@ class GamesController
     
     #プレイヤーの役表示
     character = "あなた"
-    player.judge_rank(character)
+    player.judge_rank
+    player.rank_message(character)
     
     
-    #ディーラーが手札を交換,交換メッセージ表示,手札表示
-    
-    character = "ディーラー"
-    dealer.judge_rank(character)
-    # player.rank_message(character)
-    
+    #ディーラーが手札を交換,交換メッセージ表示
+    dealer.judge_rank
     dealer.dealer_exchange(deck)
     dealer.exchange_message
     dealer.display_dealer_hand
-
+    
     #ディーラーの役表示
-    dealer.judge_rank(character)
+    character = "ディーラー"
+    dealer.rank_message(character)
 
     #役の対決
     player.set_point 
