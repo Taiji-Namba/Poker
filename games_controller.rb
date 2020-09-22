@@ -43,9 +43,12 @@ class GamesController
     dealer.judge_rank
     dealer.dealer_exchange(deck)
     dealer.exchange_message
+
+    #ディーラーの手札表示
     dealer.display_dealer_hand
     
-    #ディーラーの役表示
+    #ディーラーの役判定,表示
+    dealer.judge_rank
     character = "ディーラー"
     dealer.rank_message(character)
 

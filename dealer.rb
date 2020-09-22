@@ -83,7 +83,7 @@ attr_reader :point, :sub_point
     
     #2,3枚目もしくは3,4枚目が同じ
     elsif @scores[1] == @scores[2] || @scores[2] == @scores[3]
-      #同じscoreの札を交換
+      #3枚目を交換
       @discards << @sort_hands[2]
 
       dealer_draw(deck)
@@ -100,6 +100,8 @@ attr_reader :point, :sub_point
       dealer_draw(deck)
 
     end
+
+    p "action_for_flush"
   end
 
   #スリーペアのときの行動
