@@ -16,24 +16,24 @@ class Player < Hand
   def player_exchange(deck)
     puts <<~EOS
 
-      1.手札を交換する  2.手札を交換しない
-      1か2を入力してください 
+      y.手札を交換する  n.手札を交換しない
+      yかnを入力してください 
     EOS
 
     #交換の是非
-    action = gets.chomp.to_i
-    if action == 1
+    action = gets.chomp
+    if action == "y"
       select_discard
       player_discard
       player_draw_for_exchange(deck)
       puts 
       puts "あなたの手札はこうなりました"
-    elsif action == 2
+    elsif action == "n"
       puts
       puts "あなたの手札はこうなりました"
     else
       puts 
-      puts "半角の1か2を選択して下さい"
+      puts "半角のyかnを選択して下さい"
 
       player_exchange(deck)
     end
