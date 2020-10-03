@@ -37,25 +37,25 @@ class Hand
 
     #役判定
     if royal_straight_flush
-      @rank = "ローヤルストレートフラッシュ"
+      return @rank = "ローヤルストレートフラッシュ"
     elsif straight_flush
-      @rank = "ストレートフラッシュ"
+      return @rank = "ストレートフラッシュ"
     elsif four_of_a_kind
-      @rank = "フォーカード"
+      return @rank = "フォーカード"
     elsif a_full_house
-      @rank = "フルハウス"
+      return @rank = "フルハウス"
     elsif a_full_house
-      @rank = "フラッシュ"
+      return @rank = "フラッシュ"
     elsif straight
-      @rank = "ストレート"
+      return @rank = "ストレート"
     elsif three_of_a_kind
-      @rank = "スリーカード"
+      return @rank = "スリーカード"
     elsif two_pair
-      @rank = "ツーペア"
+      return @rank = "ツーペア"
     elsif a_pair
-      @rank = "ワンペア"
+      return @rank = "ワンペア"
     else
-      @rank = "ハイカード"
+      return @rank = "ハイカード"
     end
 
   end
