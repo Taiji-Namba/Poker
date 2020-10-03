@@ -12,8 +12,9 @@ class Player < Hand
     puts "------------------------------------"
   end
 
-      #手札を交換するか決める
+  #手札を交換するか決める
   def player_exchange(deck)
+    #交換前メッセージ
     puts <<~EOS
 
       y.手札を交換する  n.手札を交換しない
@@ -23,8 +24,9 @@ class Player < Hand
     #交換の是非
     action = gets.chomp
     if action == "y"
-      select_discard
-      player_discard
+      selected_ids = select_discard
+      player_discard(selected_ids)
+
       player_draw_for_exchange(deck)
       puts 
       puts "あなたの手札はこうなりました"
@@ -42,26 +44,25 @@ class Player < Hand
 
   #捨てる手札の選択
   def select_discard
-    
+
     select_message
 
     #捨てるカードの選択
-    @selected_ids = gets.split(' ').map(&:to_i)
-    if ! @selected_ids.select {|n| n < 1 || n > 5}.empty?
+    select_discard = gets.split(' ').map(&:to_i)
+    if ! select_discard.select {|n| n < 1 || n > 5}.empty?
       puts <<~EOS
 
         半角数字の1-5のみ入力できます
       EOS
-      @selected_ids = gets.split(' ').map(&:to_i)
-    elsif @selected_ids.uniq != @selected_ids
+      select_discard = gets.split(' ').map(&:to_i)
+    elsif select_discard.uniq != select_discard
       puts <<~EOS
 
         同じ数字が2回以上入力されています
         再度入力し直して下さい
       EOS
-        @selected_ids = gets.split(' ').map(&:to_i)
+        select_discard = gets.split(' ').map(&:to_i)
     end
-    
     
     puts 
 
@@ -78,9 +79,9 @@ class Player < Hand
   end
   
   #選択した手札を捨てる
-  def player_discard
+  def player_discard(selected_ids)
 
-    @selected_ids.each{|id| 
+    selected_ids.each{|id| 
       selected_hand = @hands[id - 1]
       puts selected_hand.show
       @discards << selected_hand
@@ -96,7 +97,7 @@ class Player < Hand
     
   #捨てた枚数分山札から引く
   def player_draw_for_exchange(deck)
-    @selected_ids.size.times {|hand|
+    selected_ids.size.times {|hand|
       hand = deck.draw
       @hands << hand
     }   
