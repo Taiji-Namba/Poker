@@ -25,10 +25,9 @@ class Player < Hand
     action = gets.chomp
     if action == "y"
       selected_ids = select_discard
-      
       player_discard(selected_ids)
-
       player_draw_for_exchange(selected_ids, deck)
+
       puts 
       puts "あなたの手札はこうなりました"
     elsif action == "n"
@@ -83,7 +82,7 @@ class Player < Hand
   def player_discard(selected_ids)
 
     puts
-    
+
     selected_ids.each{|id| 
       selected_hand = @hands[id - 1]
       puts selected_hand.show
