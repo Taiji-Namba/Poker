@@ -21,13 +21,14 @@ class Player < Hand
       yかnを入力してください 
     EOS
 
-    #交換の是非
+    #交換動作
     action = gets.chomp
     if action == "y"
       selected_ids = select_discard
+      
       player_discard(selected_ids)
 
-      player_draw_for_exchange(deck)
+      player_draw_for_exchange(selected_ids, deck)
       puts 
       puts "あなたの手札はこうなりました"
     elsif action == "n"
@@ -64,7 +65,7 @@ class Player < Hand
         select_discard = gets.split(' ').map(&:to_i)
     end
     
-    puts 
+    selected_ids = select_discard
 
   end
 
@@ -81,6 +82,8 @@ class Player < Hand
   #選択した手札を捨てる
   def player_discard(selected_ids)
 
+    puts
+    
     selected_ids.each{|id| 
       selected_hand = @hands[id - 1]
       puts selected_hand.show
@@ -96,11 +99,11 @@ class Player < Hand
   end
     
   #捨てた枚数分山札から引く
-  def player_draw_for_exchange(deck)
+  def player_draw_for_exchange(selected_ids, deck)
     selected_ids.size.times {|hand|
       hand = deck.draw
       @hands << hand
-    }   
+    }
   end
 
 end
