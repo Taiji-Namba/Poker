@@ -24,8 +24,3 @@ $ ruby main.rb
 事前にマインドマップを作成しました。
 ![poker_mindmap](https://user-images.githubusercontent.com/67740063/103650494-79672b00-4fa3-11eb-9cc4-450a1b32a4c3.jpg)
 <br>
-
-## 作者
-南塲 大慈  
-Twitter: https://twitter.com/taitan_progra  
-Email: namba9499@gmail.com  
